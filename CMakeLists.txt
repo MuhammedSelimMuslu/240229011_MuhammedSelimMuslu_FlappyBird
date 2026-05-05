@@ -10,7 +10,7 @@ include_directories("/opt/homebrew/include")
 link_directories("/opt/homebrew/lib")
 
 # Çalıştırılabilir dosyamızı oluştur
-add_executable(FlappyBirdClone main.cpp)
+add_executable(FlappyBirdClone oyun.cpp)
 
 # Kütüphaneleri bağla (Fiziksel dosya isimleri küçük harflidir)
 target_link_libraries(FlappyBirdClone sfml-graphics sfml-window sfml-system)
