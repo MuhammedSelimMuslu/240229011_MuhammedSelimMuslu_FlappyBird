@@ -21,3 +21,7 @@ void Bird::draw(sf::RenderWindow& window){
 void Bird::jump(){
     velocity = jumpForce; // Zıplayınca kuş yukarı yöne gitsin.
 }
+
+sf::Rect<float> Bird::getBounds() const {
+    return bird.getGlobalBounds();
+}

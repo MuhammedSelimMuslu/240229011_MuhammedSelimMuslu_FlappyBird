@@ -10,6 +10,7 @@ class Bird {
     void update(); // Hareket ve yer çekimi hesabı için.
     void draw(sf::RenderWindow& window); // Ekrana çizer.
     void jump(); // Zıplaması için.
+    sf::Rect<float> getBounds() const;
 
     private:
 

@@ -8,6 +8,7 @@ public:
     void update(float deltatime); // Borunun sola doğru akışı için.
     void draw(sf::RenderWindow& window); // Boruları ekranda gösterir.
     bool isOffScreen() const; // Borular sol taraftan ekrandan çıktı mı? (!!!Bellek Yönetimi)
+    bool checkCollision(const sf::Rect<float>& birdBounds) const; // Kuş boruya çarptı mı?
 
 private:
     sf::RectangleShape upperShape;

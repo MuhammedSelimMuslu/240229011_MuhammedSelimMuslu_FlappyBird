@@ -42,13 +42,26 @@ int main() {
             // Yeni boruyu hafızada kopyalama hatası olmasın diye emplace_back ile doğrudan listede yarattık.
             pipeClock.restart();
         }
-        flappy.update();
-        // Boruyu sola doğru hareket ettirecğiz.
+       flappy.update();
+
+        // Borularin pozisyonunu guvenli sekilde guncelle (Sola kaydir)
         for (size_t i = 0; i < pipes.size(); i++) {
             pipes[i].update(0.016f);
         }
-            if (!pipes.empty() && pipes.front().isOffScreen()) {
-            pipes.erase(pipes.begin()); // En öndeki, yani ekrandan çıkan boruyu siler
+
+        // HAFIZA YÖNETİMİ: Ekrandan çıkan boruları temizle
+        if (!pipes.empty() && pipes.front().isOffScreen()) {
+            pipes.erase(pipes.begin());
+        }
+
+        // ÇARPIŞMA KONTROLÜ: SFML 3'e uygun şekilde kuşun sınır kutusunu (Rect) alıyoruz
+        sf::Rect<float> birdBounds = flappy.getBounds(); 
+        
+        // Listede o an aktif olan tüm boruları tek tek dönüp kuşa çarpmış mı bakıyoruz
+        for (size_t i = 0; i < pipes.size(); i++) {
+            if (pipes[i].checkCollision(birdBounds)) {
+                window.close(); // Çarpışma varsa pencereyi anında kapat!
+            }
         }
 
         // 1. ADIM: Ekranı temizlemesi için (Açık mavi bir renk ile).
