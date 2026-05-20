@@ -47,6 +47,9 @@ int main() {
         for (size_t i = 0; i < pipes.size(); i++) {
             pipes[i].update(0.016f);
         }
+            if (!pipes.empty() && pipes.front().isOffScreen()) {
+            pipes.erase(pipes.begin()); // En öndeki, yani ekrandan çıkan boruyu siler
+        }
 
         // 1. ADIM: Ekranı temizlemesi için (Açık mavi bir renk ile).
         window.clear(sf::Color(135, 206, 235));

@@ -14,8 +14,8 @@ private:
     sf::RectangleShape lowerShape;
     // Alt ve üst boruların şeklini girdik.
     float posX; // Borunu yatay koordinatı.
-    const float pipeWidth = 60.f; // Boru kalınlığı.
-    const float pipeGap = 160.f; // Borular arasındaki boşluk.
-    const float speed = 200.f; // Boruların akış hızı.
+    float pipeWidth = 60.f; // Boru kalınlığı.
+    float pipeGap = 160.f; // Borular arasındaki boşluk.
+    float speed = 200.f; // Boruların akış hızı.
 };
 #endif
