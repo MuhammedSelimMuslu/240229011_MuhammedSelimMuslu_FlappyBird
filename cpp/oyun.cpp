@@ -3,9 +3,12 @@
 #include <optional> 
 #include <vector>
 #include "pipe.hpp"
+#include <cstdlib> // Rastgele sayı üretmek (rand) için eklendi.
+#include <ctime>   // Rastgele süre üretmek (time) için eklendi.
 #include "bird.hpp"
 
 int main() {
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     // SFML 3'te VideoMode artık bir vektör boyutu beklediği için değerleri { } içine almamız gerekiyor.
     sf::RenderWindow window(sf::VideoMode({800, 600}), "Flappy Bird - C++ & SFML");
     // Oyunun saniyedeki kare hızını (FPS) 60'a sabitledik.
@@ -33,7 +36,10 @@ int main() {
             }
         }
         if (pipeClock.getElapsedTime().asSeconds() > 2.0f) {
-            pipes.emplace_back(800.f, 200.f);
+            float randomY = static_cast<float>(std::rand() % 200 + 150); // 150 ile 350 arasında rastgele yükseklik olacak.
+            // Borular hep aynı hizada gelmesin diye 150 ile 350 arasında rastgele bir Y koordinatı seçtik.
+            pipes.emplace_back(800.f, randomY);
+            // Yeni boruyu hafızada kopyalama hatası olmasın diye emplace_back ile doğrudan listede yarattık.
             pipeClock.restart();
         }
         flappy.update();
