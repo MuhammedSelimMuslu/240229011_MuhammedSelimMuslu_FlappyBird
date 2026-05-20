@@ -6,11 +6,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Mac (Homebrew) için kütüphane yollarını doğrudan derleyiciye veriyoruz
-include_directories("/opt/homebrew/include")
+include_directories(
+    "/opt/homebrew/include
+    hpp")
 link_directories("/opt/homebrew/lib")
 
 # Çalıştırılabilir dosyamızı oluştur
-add_executable(FlappyBirdClone oyun.cpp)
+add_executable(FlappyBirdClone 
+    cpp/oyun.cpp
+    cpp/bird.cpp
+    cpp/pipe.cpp
+)
 
 # Kütüphaneleri bağla (Fiziksel dosya isimleri küçük harflidir)
 target_link_libraries(FlappyBirdClone sfml-graphics sfml-window sfml-system)
