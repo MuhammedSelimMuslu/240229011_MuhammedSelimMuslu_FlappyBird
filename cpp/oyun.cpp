@@ -15,6 +15,7 @@ int main() {
     // X = 700 konumunda ve ortadaki boşluğun Y = 200 koordinatında başladığı bir boru oluşturduk.
     std::vector<Pipe> pipes;
     pipes.emplace_back(700.f, 200.f);
+    sf::Clock pipeClock;
     // Oyun döngüsü (Game Loop)
     while (window.isOpen()) {
 
@@ -30,6 +31,10 @@ int main() {
                     flappy.jump();
                 }
             }
+        }
+        if (pipeClock.getElapsedTime().asSeconds() > 2.0f) {
+            pipes.emplace_back(800.f, 200.f);
+            pipeClock.restart();
         }
         flappy.update();
         // Boruyu sola doğru hareket ettirecğiz.
