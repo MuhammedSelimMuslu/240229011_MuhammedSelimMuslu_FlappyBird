@@ -42,20 +42,32 @@ int main() {
             // Yeni boruyu hafızada kopyalama hatası olmasın diye emplace_back ile doğrudan listede yarattık.
             pipeClock.restart();
         }
-       flappy.update();
+        flappy.update();
+    
+        // Kuşun koordinatına göre ekran dışında olup olmadığını kontrol ediyoruz.
+        sf::Rect<float> birdBounds = flappy.getBounds();
+       
+        // Kuş yere düşerse oyun penceresini kapat.
+        if (birdBounds.position.y + birdBounds.size.y > 600.f){
+            window.close();
+        }
+
+        if (birdBounds.position.y < 0.f){
+           window.close();
+        }
 
         // Borularin pozisyonunu guvenli sekilde guncelle (Sola kaydir)
         for (size_t i = 0; i < pipes.size(); i++) {
             pipes[i].update(0.016f);
         }
 
-        // HAFIZA YÖNETİMİ: Ekrandan çıkan boruları temizle
+        // Hafıza Yönetimi: Ekrandan çıkan boruları temizliyoruz
         if (!pipes.empty() && pipes.front().isOffScreen()) {
             pipes.erase(pipes.begin());
         }
 
-        // ÇARPIŞMA KONTROLÜ: SFML 3'e uygun şekilde kuşun sınır kutusunu (Rect) alıyoruz
-        sf::Rect<float> birdBounds = flappy.getBounds(); 
+        // Çarpışma Kontrolü: SFML 3'e uygun şekilde kuşun sınır kutusunu (Rect) alıyoruz
+        birdBounds = flappy.getBounds(); 
         
         // Listede o an aktif olan tüm boruları tek tek dönüp kuşa çarpmış mı bakıyoruz
         for (size_t i = 0; i < pipes.size(); i++) {
@@ -64,7 +76,7 @@ int main() {
             }
         }
 
-        // 1. ADIM: Ekranı temizlemesi için (Açık mavi bir renk ile).
+        // Ekranı temizlemesi için (Açık mavi bir renk ile).
         window.clear(sf::Color(135, 206, 235));
         flappy.draw(window);
         // Boruyu ekrana çizelim.
@@ -72,7 +84,7 @@ int main() {
             pipes[i].draw(window);
         }
 
-        // 2. ADIM: Çizilenleri ekrana yansıtmak için.
+        // Çizilenleri ekrana yansıtmak için.
         window.display();
     }
 
