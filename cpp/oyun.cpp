@@ -14,6 +14,9 @@ int main() {
     // Oyunun saniyedeki kare hızını (FPS) 60'a sabitledik.
     window.setFramerateLimit(60);
 
+    // Skor sistemimiz için tanımlama yapacağız.
+    int score = 0;
+
     Bird flappy;
     // X = 700 konumunda ve ortadaki boşluğun Y = 200 koordinatında başladığı bir boru oluşturduk.
     std::vector<Pipe> pipes;
@@ -56,20 +59,21 @@ int main() {
            window.close();
         }
 
-        // Borularin pozisyonunu guvenli sekilde guncelle (Sola kaydir)
+        // Borularin pozisyonunu güvenli şekilde güncelleyeceğiz. (Sola kaydir)
         for (size_t i = 0; i < pipes.size(); i++) {
             pipes[i].update(0.016f);
+            // Kuş boruyu geçtiğinde skoru arttıracağız.
         }
 
-        // Hafıza Yönetimi: Ekrandan çıkan boruları temizliyoruz
+        // Hafıza Yönetimi: Ekrandan çıkan boruları temizliyoruz.
         if (!pipes.empty() && pipes.front().isOffScreen()) {
             pipes.erase(pipes.begin());
         }
 
-        // Çarpışma Kontrolü: SFML 3'e uygun şekilde kuşun sınır kutusunu (Rect) alıyoruz
+        // Çarpışma Kontrolü: SFML 3'e uygun şekilde kuşun sınır kutusunu (Rect) alıyoruz.
         birdBounds = flappy.getBounds(); 
         
-        // Listede o an aktif olan tüm boruları tek tek dönüp kuşa çarpmış mı bakıyoruz
+        // Listede o an aktif olan tüm boruları tek tek dönüp kuşa çarpmış mı bakıyoruz.
         for (size_t i = 0; i < pipes.size(); i++) {
             if (pipes[i].checkCollision(birdBounds)) {
                 window.close(); // Çarpışma varsa pencereyi anında kapat!
