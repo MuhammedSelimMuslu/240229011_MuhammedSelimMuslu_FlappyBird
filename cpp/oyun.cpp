@@ -14,6 +14,25 @@ int main() {
     // Oyunun saniyedeki kare hızını (FPS) 60'a sabitledik.
     window.setFramerateLimit(60);
 
+    // Skor sistemimiz için tanımlama yapacağız.
+    int score = 0;
+
+    // Skorumuzu ekrana yazdırabilmek için yazı fontu yükleyeceğiz.
+    sf::Font font;
+    if (!font.openFromFile("arial.ttf")) {
+        // Font dosyası yüklenemezse hata vermemesi için oyunu kapatacağız.
+        return -1;
+    }
+    
+    // Ekranda gözükecek skor yazısını tanımlayıp özelliklerini yazacağız.
+    sf::Text scoreText(font);
+    scoreText.setString("0");
+    scoreText.setCharacterSize(40);
+    scoreText.setFillColor(sf::Color::White);
+
+    // Skorun gözükeceği yeri ayarlıyoruz.
+    scoreText.setPosition({380.f, 20.f});
+
     Bird flappy;
     // X = 700 konumunda ve ortadaki boşluğun Y = 200 koordinatında başladığı bir boru oluşturduk.
     std::vector<Pipe> pipes;
@@ -42,29 +61,51 @@ int main() {
             // Yeni boruyu hafızada kopyalama hatası olmasın diye emplace_back ile doğrudan listede yarattık.
             pipeClock.restart();
         }
-       flappy.update();
+        flappy.update();
+    
+        // Kuşun koordinatına göre ekran dışında olup olmadığını kontrol ediyoruz.
+        sf::Rect<float> birdBounds = flappy.getBounds();
+       
+        // Kuş yere düşerse oyun penceresini kapat.
+        if (birdBounds.position.y + birdBounds.size.y > 600.f){
+            window.close();
+        }
 
-        // Borularin pozisyonunu guvenli sekilde guncelle (Sola kaydir)
+        if (birdBounds.position.y < 0.f){
+           window.close();
+        }
+
+        // Borularin pozisyonunu güvenli şekilde güncelleyeceğiz. (Sola kaydir)
         for (size_t i = 0; i < pipes.size(); i++) {
             pipes[i].update(0.016f);
         }
 
-        // HAFIZA YÖNETİMİ: Ekrandan çıkan boruları temizle
+        for(size_t i = 0; i < pipes.size(); ++i){
+        // Kuş boruyu geçtiğinde skoru arttıracağız.
+        // Kuşun X koordinatına göre borunun X koordinatından büyükse ve boru daha geçilmediyse passed değişkenine ve pipes[i] nesnesinin boru koordinatına göre kontrol ediyoruz.
+        sf::Rect<float> upperBounds = pipes[i].getUpperBounds();
+        if (!pipes[i].passed && upperBounds.position.x + upperBounds.size.x < 100.f){
+            score++;
+            scoreText.setString(std::to_string(score)); // Ekrandaki skor yazısını güncellemek için.
+            pipes[i].passed = true; // Bu kod borudan skor eklediğimizi belirtmek için sonra hata olmasın diye.
+        }}
+
+        // Hafıza Yönetimi: Ekrandan çıkan boruları temizliyoruz.
         if (!pipes.empty() && pipes.front().isOffScreen()) {
             pipes.erase(pipes.begin());
         }
 
-        // ÇARPIŞMA KONTROLÜ: SFML 3'e uygun şekilde kuşun sınır kutusunu (Rect) alıyoruz
-        sf::Rect<float> birdBounds = flappy.getBounds(); 
+        // Çarpışma Kontrolü: SFML 3'e uygun şekilde kuşun sınır kutusunu (Rect) alıyoruz.
+        birdBounds = flappy.getBounds(); 
         
-        // Listede o an aktif olan tüm boruları tek tek dönüp kuşa çarpmış mı bakıyoruz
+        // Listede o an aktif olan tüm boruları tek tek dönüp kuşa çarpmış mı bakıyoruz.
         for (size_t i = 0; i < pipes.size(); i++) {
             if (pipes[i].checkCollision(birdBounds)) {
                 window.close(); // Çarpışma varsa pencereyi anında kapat!
             }
         }
 
-        // 1. ADIM: Ekranı temizlemesi için (Açık mavi bir renk ile).
+        // Ekranı temizlemesi için (Açık mavi bir renk ile).
         window.clear(sf::Color(135, 206, 235));
         flappy.draw(window);
         // Boruyu ekrana çizelim.
@@ -72,7 +113,10 @@ int main() {
             pipes[i].draw(window);
         }
 
-        // 2. ADIM: Çizilenleri ekrana yansıtmak için.
+        // Skoru yazdırıyoruz.
+        window.draw(scoreText);
+
+        // Çizilenleri ekrana yansıtmak için.
         window.display();
     }
 

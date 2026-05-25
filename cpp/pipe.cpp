@@ -8,7 +8,7 @@ Pipe::Pipe(float xPos, float gapY) : posX(xPos){ // Boru oluştuğunda olacak ö
 
     // | Alt boru |
     lowerShape.setSize({pipeWidth, 600.f - (gapY + pipeGap)}); // Genişliği ve yüksekliği.
-    lowerShape.setFillColor(sf::Color::Green); // Rengi.
+    lowerShape.setFillColor(sf::Color::Green); // Rengi için.
     lowerShape.setPosition({posX, gapY + pipeGap}); // Üst boru ve boşluktan sonra alta çiz.
 };
 
@@ -34,19 +34,19 @@ bool Pipe::checkCollision(const sf::Rect<float>& birdBounds) const {
     sf::Rect<float> upperBounds = upperShape.getGlobalBounds();
     sf::Rect<float> lowerBounds = lowerShape.getGlobalBounds();
 
-    // Kus ile ust borunun carpisma hesabi
+    // Kuş ile üst borunun çarpışma hesabı yapacağız.
     bool upperCollide = birdBounds.position.x < upperBounds.position.x + upperBounds.size.x &&
                         birdBounds.position.x + birdBounds.size.x > upperBounds.position.x &&
                         birdBounds.position.y < upperBounds.position.y + upperBounds.size.y &&
                         birdBounds.position.y + birdBounds.size.y > upperBounds.position.y;
 
-    // Kus ile alt borunun carpisma hesabi
+    // Kuş ile alt borunun çarpışma hesabı yapacağız.
     bool lowerCollide = birdBounds.position.x < lowerBounds.position.x + lowerBounds.size.x &&
                         birdBounds.position.x + birdBounds.size.x > lowerBounds.position.x &&
                         birdBounds.position.y < lowerBounds.position.y + lowerBounds.size.y &&
                         birdBounds.position.y + birdBounds.size.y > lowerBounds.position.y;
 
-    // Kus iki borudan birine bile teget gectiyse veya icine girdiyse true doner
+    // Kuş iki borudan birine bile teğet geçtiyse veya içine girdiyse true döner.
     if (upperCollide || lowerCollide) {
         return true;
     }
