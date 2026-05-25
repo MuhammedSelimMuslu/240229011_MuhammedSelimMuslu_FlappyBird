@@ -23,6 +23,15 @@ int main() {
         // Font dosyası yüklenemezse hata vermemesi için oyunu kapatacağız.
         return -1;
     }
+    
+    // Ekranda gözükecek skor yazısını tanımlayıp özelliklerini yazacağız.
+    sf::Text scoreText(font);
+    scoreText.setString("0");
+    scoreText.setCharacterSize(40);
+    scoreText.setFillColor(sf::Color::White);
+
+    // Skorun gözükeceği yeri ayarlıyoruz.
+    scoreText.setPosition({380.f, 20.f});
 
     Bird flappy;
     // X = 700 konumunda ve ortadaki boşluğun Y = 200 koordinatında başladığı bir boru oluşturduk.
@@ -94,6 +103,9 @@ int main() {
         for (size_t i = 0; i < pipes.size(); i++) {
             pipes[i].draw(window);
         }
+
+        // Skoru yazdırıyoruz.
+        window.draw(scoreText);
 
         // Çizilenleri ekrana yansıtmak için.
         window.display();
