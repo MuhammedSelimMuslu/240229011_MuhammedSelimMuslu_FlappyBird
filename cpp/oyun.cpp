@@ -17,6 +17,13 @@ int main() {
     // Skor sistemimiz için tanımlama yapacağız.
     int score = 0;
 
+    // Skorumuzu ekrana yazdırabilmek için yazı fontu yükleyeceğiz.
+    sf::Font font;
+    if (!font.openFromFile("arial.ttf")) {
+        // Font dosyası yüklenemezse hata vermemesi için oyunu kapatacağız.
+        return -1;
+    }
+
     Bird flappy;
     // X = 700 konumunda ve ortadaki boşluğun Y = 200 koordinatında başladığı bir boru oluşturduk.
     std::vector<Pipe> pipes;
