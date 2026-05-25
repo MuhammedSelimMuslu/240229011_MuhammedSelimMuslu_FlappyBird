@@ -35,6 +35,13 @@ int main() {
     // Skorun gözükeceği yeri ayarlıyoruz.
     scoreText.setPosition({380.f, 20.f});
 
+    // Game Over yazısının yazımı.
+    sf::Text gameOverText(font);
+    gameOverText.setString("GAME OVER");
+    gameOverText.setCharacterSize(50);
+    gameOverText.setFillColor(sf::Color::Red);
+    gameOverText.setPosition({260.f, 250.f});
+
     Bird flappy;
     // X = 700 konumunda ve ortadaki boşluğun Y = 200 koordinatında başladığı bir boru oluşturduk.
     std::vector<Pipe> pipes;
@@ -116,6 +123,10 @@ int main() {
 
         // Skoru yazdırıyoruz.
         window.draw(scoreText);
+
+        if(isGameOver){
+            window.draw(gameOverText);
+        }
 
         // Çizilenleri ekrana yansıtmak için.
         window.display();
