@@ -71,7 +71,12 @@ int main() {
             
             if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
                 if (keyPressed->code == sf::Keyboard::Key::Space){
-                    flappy.jump();
+                    if (!isGameOver) {
+                        flappy.jump(); // Oyun devam ediyorsa kuş zıplayabilsin.
+                    }
+                    else{
+                        isGameOver = false; 
+                    }
                 }
             }
         }
