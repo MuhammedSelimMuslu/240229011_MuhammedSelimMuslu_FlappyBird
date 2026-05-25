@@ -14,6 +14,8 @@ int main() {
     // Oyunun saniyedeki kare hızını (FPS) 60'a sabitledik.
     window.setFramerateLimit(60);
 
+    bool isGameOver = false;
+
     // Skor sistemimiz için tanımlama yapacağız.
     int score = 0;
 
@@ -54,55 +56,54 @@ int main() {
                 }
             }
         }
-        if (pipeClock.getElapsedTime().asSeconds() > 2.0f) {
+        
+        if(!isGameOver){
+            if (pipeClock.getElapsedTime().asSeconds() > 2.0f) {
             float randomY = static_cast<float>(std::rand() % 200 + 150); // 150 ile 350 arasında rastgele yükseklik olacak.
             // Borular hep aynı hizada gelmesin diye 150 ile 350 arasında rastgele bir Y koordinatı seçtik.
             pipes.emplace_back(800.f, randomY);
             // Yeni boruyu hafızada kopyalama hatası olmasın diye emplace_back ile doğrudan listede yarattık.
             pipeClock.restart();
-        }
-        flappy.update();
-    
+        }}
+
         // Kuşun koordinatına göre ekran dışında olup olmadığını kontrol ediyoruz.
         sf::Rect<float> birdBounds = flappy.getBounds();
        
-        // Kuş yere düşerse oyun penceresini kapat.
-        if (birdBounds.position.y + birdBounds.size.y > 600.f){
-            window.close();
+        // Kuş yere düşerse yada yukarı çarparsa oyunu bitir.
+        if ((birdBounds.position.y + birdBounds.size.y > 600.f) || (birdBounds.position.y < 0.f)){
+            isGameOver = true;
         }
 
-        if (birdBounds.position.y < 0.f){
-           window.close();
-        }
-
+        if(!isGameOver){
+            flappy.update();
+        
         // Borularin pozisyonunu güvenli şekilde güncelleyeceğiz. (Sola kaydir)
-        for (size_t i = 0; i < pipes.size(); i++) {
+            for (size_t i = 0; i < pipes.size(); i++) {
             pipes[i].update(0.016f);
+            }
         }
+        
 
+        // Boruya çarparsa oyunu bitir.
         for(size_t i = 0; i < pipes.size(); ++i){
+            if (pipes[i].checkCollision(birdBounds)){
+                isGameOver = true;
+            }
+
         // Kuş boruyu geçtiğinde skoru arttıracağız.
         // Kuşun X koordinatına göre borunun X koordinatından büyükse ve boru daha geçilmediyse passed değişkenine ve pipes[i] nesnesinin boru koordinatına göre kontrol ediyoruz.
         sf::Rect<float> upperBounds = pipes[i].getUpperBounds();
-        if (!pipes[i].passed && upperBounds.position.x + upperBounds.size.x < 100.f){
+
+            if (!pipes[i].passed && upperBounds.position.x + upperBounds.size.x < 100.f){
             score++;
             scoreText.setString(std::to_string(score)); // Ekrandaki skor yazısını güncellemek için.
             pipes[i].passed = true; // Bu kod borudan skor eklediğimizi belirtmek için sonra hata olmasın diye.
-        }}
+            }
+        }
 
         // Hafıza Yönetimi: Ekrandan çıkan boruları temizliyoruz.
         if (!pipes.empty() && pipes.front().isOffScreen()) {
             pipes.erase(pipes.begin());
-        }
-
-        // Çarpışma Kontrolü: SFML 3'e uygun şekilde kuşun sınır kutusunu (Rect) alıyoruz.
-        birdBounds = flappy.getBounds(); 
-        
-        // Listede o an aktif olan tüm boruları tek tek dönüp kuşa çarpmış mı bakıyoruz.
-        for (size_t i = 0; i < pipes.size(); i++) {
-            if (pipes[i].checkCollision(birdBounds)) {
-                window.close(); // Çarpışma varsa pencereyi anında kapat!
-            }
         }
 
         // Ekranı temizlemesi için (Açık mavi bir renk ile).
