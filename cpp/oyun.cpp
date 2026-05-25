@@ -16,8 +16,9 @@ int main() {
 
     bool isGameOver = false;
 
-    // Skor sistemimiz için tanımlama yapacağız.
+    // Skor sistemlerimiz için tanımlama yapacağız.
     int score = 0;
+    int highScore = 0;
 
     // Skorumuzu ekrana yazdırabilmek için yazı fontu yükleyeceğiz.
     sf::Font font;
@@ -31,8 +32,6 @@ int main() {
     scoreText.setString("0");
     scoreText.setCharacterSize(40);
     scoreText.setFillColor(sf::Color::White);
-
-    // Skorun gözükeceği yeri ayarlıyoruz.
     scoreText.setPosition({380.f, 20.f});
 
     // Game Over yazısının yazımı.
@@ -41,6 +40,19 @@ int main() {
     gameOverText.setCharacterSize(50);
     gameOverText.setFillColor(sf::Color::Red);
     gameOverText.setPosition({260.f, 250.f});
+
+    // Yeniden Başlamanın yazımı.
+    sf::Text restartText(font);
+    restartText.setString("Yeniden baslatmak icin Space'e basin.");
+    restartText.setCharacterSize(22);
+    restartText.setFillColor(sf::Color::White);
+    restartText.setPosition({210.0f, 320.0f});
+
+    // Highscore yazımı.
+    sf::Text highScoreText(font);
+    highScoreText.setCharacterSize(25);
+    highScoreText.setFillColor(sf::Color::Yellow);
+    highScoreText.setPosition({280.0f, 370.0f});
 
     Bird flappy;
     // X = 700 konumunda ve ortadaki boşluğun Y = 200 koordinatında başladığı bir boru oluşturduk.
@@ -79,6 +91,8 @@ int main() {
         // Kuş yere düşerse yada yukarı çarparsa oyunu bitir.
         if ((birdBounds.position.y + birdBounds.size.y > 600.f) || (birdBounds.position.y < 0.f)){
             isGameOver = true;
+            if (score > highScore){ highScore = score; } // Rekor kırıldımı?
+            highScoreText.setString("En Yuksek Skor: " + std::to_string(highScore));
         }
 
         if(!isGameOver){
@@ -95,6 +109,8 @@ int main() {
         for(size_t i = 0; i < pipes.size(); ++i){
             if (pipes[i].checkCollision(birdBounds)){
                 isGameOver = true;
+                if (score > highScore){ highScore = score; } // Rekor kırıldımı?
+                highScoreText.setString("En Yuksek Skor: " + std::to_string(highScore));
             }
 
         // Kuş boruyu geçtiğinde skoru arttıracağız.
@@ -126,6 +142,8 @@ int main() {
 
         if(isGameOver){
             window.draw(gameOverText);
+            window.draw(restartText);
+            window.draw(highScoreText);
         }
 
         // Çizilenleri ekrana yansıtmak için.
