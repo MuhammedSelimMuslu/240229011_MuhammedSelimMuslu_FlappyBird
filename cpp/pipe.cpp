@@ -28,9 +28,17 @@ bool Pipe::isOffScreen() const{
 }
 
 bool Pipe::checkCollision(const sf::Rect<float>& birdBounds) const {
-    // SFML 3 standartlarinda (position ve size kullanarak) iki kutunun 
-    // birbirinin icine girip girmedigini (AABB) matematiksel olarak kontrol ediyoruz.
-    
+    if(birdBounds.findIntersection(upperShape.getGlobalBounds())) {
+        return true; // Kuş üst boruya çarptı mı?
+    }
+
+    if (birdBounds.findIntersection(lowerShape.getGlobalBounds())) {
+        return true; // Kuş alt boruya çarptı mı?
+    }
+
+    return false; // Hiçbirine çarpmadıysa güvende demektir.
+
+
     sf::Rect<float> upperBounds = upperShape.getGlobalBounds();
     sf::Rect<float> lowerBounds = lowerShape.getGlobalBounds();
 
