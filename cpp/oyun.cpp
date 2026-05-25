@@ -78,8 +78,17 @@ int main() {
         // Borularin pozisyonunu güvenli şekilde güncelleyeceğiz. (Sola kaydir)
         for (size_t i = 0; i < pipes.size(); i++) {
             pipes[i].update(0.016f);
-            // Kuş boruyu geçtiğinde skoru arttıracağız.
         }
+
+        for(size_t i = 0; i < pipes.size(); ++i){
+        // Kuş boruyu geçtiğinde skoru arttıracağız.
+        // Kuşun X koordinatına göre borunun X koordinatından büyükse ve boru daha geçilmediyse passed değişkenine ve pipes[i] nesnesinin boru koordinatına göre kontrol ediyoruz.
+        sf::Rect<float> upperBounds = pipes[i].getUpperBounds();
+        if (!pipes[i].passed && upperBounds.position.x + upperBounds.size.x < 100.f){
+            score++;
+            scoreText.setString(std::to_string(score)); // Ekrandaki skor yazısını güncellemek için.
+            pipes[i].passed = true; // Bu kod borudan skor eklediğimizi belirtmek için sonra hata olmasın diye.
+        }}
 
         // Hafıza Yönetimi: Ekrandan çıkan boruları temizliyoruz.
         if (!pipes.empty() && pipes.front().isOffScreen()) {
