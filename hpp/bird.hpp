@@ -10,6 +10,7 @@ class Bird {
     void update(); // Hareket ve yer çekimi hesabı için.
     void draw(sf::RenderWindow& window); // Ekrana çizer.
     void jump(); // Zıplaması için.
+    void reset(); // Kuşun başlangıç pozisyonuna gitmesini ve hızının sıfırlanmasını sağlayan fonksiyon.
     sf::Rect<float> getBounds() const;
 
     private:

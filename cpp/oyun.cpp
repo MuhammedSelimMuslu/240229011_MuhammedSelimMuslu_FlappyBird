@@ -7,11 +7,6 @@
 #include <ctime>   // Rastgele süre üretmek (time) için eklendi.
 #include "bird.hpp"
 
-void resetGame(bool& isGameOver, int& score, sf::Text& scoreText){
-    score = 0;
-    scoreText.setString("0");
-} // Oyunu yeniden başlatmak için değişkenleri sıfırlaması gereken fonksiyon yazıldı.
-
 int main() {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     // SFML 3'te VideoMode artık bir vektör boyutu beklediği için değerleri { } içine almamız gerekiyor.
@@ -64,6 +59,7 @@ int main() {
     std::vector<Pipe> pipes;
     pipes.emplace_back(700.f, 200.f);
     sf::Clock pipeClock;
+
     // Oyun döngüsü (Game Loop)
     while (window.isOpen()) {
 
@@ -80,9 +76,14 @@ int main() {
                         flappy.jump(); // Oyun devam ediyorsa kuş zıplayabilsin.
                     }
                     else{
-                        resetGame(isGameOver, score, scoreText); // Oyun bittiyse fonksiyonu çağırıp skoru sıfırlıyoruz.
+                        score = 0;
+                        scoreText.setString("0");
 
-                        isGameOver = false; // Fonksiyonun sıfırlama işleminden sonra oyunu yeniden başlatıyoruz.
+                        flappy.reset();
+                        pipes.clear();
+                        pipeClock.restart();
+
+                        isGameOver = false;
                     }
                 }
             }
@@ -95,39 +96,38 @@ int main() {
             pipes.emplace_back(800.f, randomY);
             // Yeni boruyu hafızada kopyalama hatası olmasın diye emplace_back ile doğrudan listede yarattık.
             pipeClock.restart();
-        }}
-
+            }
+       
         // Kuşun koordinatına göre ekran dışında olup olmadığını kontrol ediyoruz.
         sf::Rect<float> birdBounds = flappy.getBounds();
-       
-        // Kuş yere düşerse yada yukarı çarparsa oyunu bitir.
+
+            // Kuş yere düşerse yada yukarı çarparsa oyunu bitir.
         if ((birdBounds.position.y + birdBounds.size.y > 600.f) || (birdBounds.position.y < 0.f)){
             isGameOver = true;
             if (score > highScore){ highScore = score; } // Rekor kırıldımı?
-            highScoreText.setString("En Yuksek Skor: " + std::to_string(highScore));
+                highScoreText.setString("En Yuksek Skor: " + std::to_string(highScore));
         }
-
-        if(!isGameOver){
-            flappy.update();
         
+        flappy.update();
+
         // Borularin pozisyonunu güvenli şekilde güncelleyeceğiz. (Sola kaydir)
-            for (size_t i = 0; i < pipes.size(); i++) {
+        for (size_t i = 0; i < pipes.size(); i++) {
             pipes[i].update(0.016f);
-            }
         }
-        
 
-        // Boruya çarparsa oyunu bitir.
-        for(size_t i = 0; i < pipes.size(); ++i){
+        for (size_t i = 0; i < pipes.size(); i++) {
+            // Boruya çarparsa oyunu bitir.
             if (pipes[i].checkCollision(birdBounds)){
                 isGameOver = true;
                 if (score > highScore){ highScore = score; } // Rekor kırıldımı?
                 highScoreText.setString("En Yuksek Skor: " + std::to_string(highScore));
             }
+        }
 
+        for (size_t i = 0; i < pipes.size(); i++) {
         // Kuş boruyu geçtiğinde skoru arttıracağız.
         // Kuşun X koordinatına göre borunun X koordinatından büyükse ve boru daha geçilmediyse passed değişkenine ve pipes[i] nesnesinin boru koordinatına göre kontrol ediyoruz.
-        sf::Rect<float> upperBounds = pipes[i].getUpperBounds();
+            sf::Rect<float> upperBounds = pipes[i].getUpperBounds();
 
             if (!pipes[i].passed && upperBounds.position.x + upperBounds.size.x < 100.f){
             score++;
@@ -135,32 +135,35 @@ int main() {
             pipes[i].passed = true; // Bu kod borudan skor eklediğimizi belirtmek için sonra hata olmasın diye.
             }
         }
-
+    
+        
         // Hafıza Yönetimi: Ekrandan çıkan boruları temizliyoruz.
         if (!pipes.empty() && pipes.front().isOffScreen()) {
             pipes.erase(pipes.begin());
         }
+    }
+        
+    // Ekranı temizlemesi için (Açık mavi bir renk ile).
+    window.clear(sf::Color(135, 206, 235));
+    flappy.draw(window);
 
-        // Ekranı temizlemesi için (Açık mavi bir renk ile).
-        window.clear(sf::Color(135, 206, 235));
-        flappy.draw(window);
-        // Boruyu ekrana çizelim.
-        for (size_t i = 0; i < pipes.size(); i++) {
-            pipes[i].draw(window);
-        }
-
-        // Skoru yazdırıyoruz.
-        window.draw(scoreText);
-
-        if(isGameOver){
-            window.draw(gameOverText);
-            window.draw(restartText);
-            window.draw(highScoreText);
-        }
-
-        // Çizilenleri ekrana yansıtmak için.
-        window.display();
+    // Boruyu ekrana çizelim.
+    for (size_t i = 0; i < pipes.size(); i++) {
+        pipes[i].draw(window);
     }
 
+    // Skoru yazdırıyoruz.
+    window.draw(scoreText);
+
+    if(isGameOver){
+        window.draw(gameOverText);
+        window.draw(restartText);
+        window.draw(highScoreText);
+    }
+
+    // Çizilenleri ekrana yansıtmak için.
+    window.display();
+    
+    }
     return 0;
 }

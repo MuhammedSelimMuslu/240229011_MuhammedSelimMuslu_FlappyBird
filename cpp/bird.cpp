@@ -12,7 +12,7 @@ void Bird::update(){
     velocity += gravity; // Yerçekiminin hızı arttırması için.
     birdY += velocity; // Hızın kuşun konumunu değiştirmesi için.
     bird.setPosition({100.f, birdY}); // Kuşun görüntüsünü yeni koordinata taşıması için.
-}
+}   
 
 void Bird::draw(sf::RenderWindow& window){
      window.draw(bird);  // Bu kod kuşumuzu çizdirmek için.
@@ -24,4 +24,10 @@ void Bird::jump(){
 
 sf::Rect<float> Bird::getBounds() const {
     return bird.getGlobalBounds();
+}
+
+void Bird::reset() {
+    birdY = 300.f;
+    velocity = 0.f; // Kuşun başlangıçta olacak olan aşağı düşüş hızı.
+    bird.setPosition({100.f, 300.f}); // Kuşu ekranın solunda ve dikeyde ortada olacak şekilde başlatıyoruz.
 }
