@@ -80,7 +80,9 @@ int main() {
                         flappy.jump(); // Oyun devam ediyorsa kuş zıplayabilsin.
                     }
                     else{
-                        isGameOver = false; 
+                        resetGame(isGameOver, score, scoreText); // Oyun bittiyse fonksiyonu çağırıp skoru sıfırlıyoruz.
+
+                        isGameOver = false; // Fonksiyonun sıfırlama işleminden sonra oyunu yeniden başlatıyoruz.
                     }
                 }
             }
