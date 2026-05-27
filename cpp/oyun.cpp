@@ -7,6 +7,11 @@
 #include <ctime>   // Rastgele süre üretmek (time) için eklendi.
 #include "bird.hpp"
 
+void resetGame(bool& isGameOver, int& score, sf::Text& scoreText){
+    score = 0;
+    scoreText.setString("0");
+} // Oyunu yeniden başlatmak için değişkenleri sıfırlaması gereken fonksiyon yazıldı.
+
 int main() {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     // SFML 3'te VideoMode artık bir vektör boyutu beklediği için değerleri { } içine almamız gerekiyor.
