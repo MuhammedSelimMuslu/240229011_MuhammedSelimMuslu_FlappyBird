@@ -14,6 +14,14 @@ int main() {
     // Oyunun saniyedeki kare hızını (FPS) 60'a sabitledik.
     window.setFramerateLimit(60);
 
+    sf::Texture birdTexture;
+    if (!birdTexture.loadFromFile("bird.png")) {
+        // Eğer dosyayı bulamazsa terminale hata yazdırsın.
+        std::printf("HATA: bird.png dosyasi bulunamadi!\n");
+    }
+
+    Bird flappy(birdTexture);
+
     bool isGameOver = false;
 
     // Skor sistemlerimiz için tanımlama yapacağız.
@@ -54,7 +62,6 @@ int main() {
     highScoreText.setFillColor(sf::Color::Yellow);
     highScoreText.setPosition({280.0f, 370.0f});
 
-    Bird flappy;
     // X = 700 konumunda ve ortadaki boşluğun Y = 200 koordinatında başladığı bir boru oluşturduk.
     std::vector<Pipe> pipes;
     pipes.emplace_back(700.f, 200.f);
@@ -91,11 +98,11 @@ int main() {
         
         if(!isGameOver){
             if (pipeClock.getElapsedTime().asSeconds() > 2.0f) {
-            float randomY = static_cast<float>(std::rand() % 200 + 150); // 150 ile 350 arasında rastgele yükseklik olacak.
-            // Borular hep aynı hizada gelmesin diye 150 ile 350 arasında rastgele bir Y koordinatı seçtik.
-            pipes.emplace_back(800.f, randomY);
-            // Yeni boruyu hafızada kopyalama hatası olmasın diye emplace_back ile doğrudan listede yarattık.
-            pipeClock.restart();
+                float randomY = static_cast<float>(std::rand() % 200 + 150); // 150 ile 350 arasında rastgele yükseklik olacak.
+                // Borular hep aynı hizada gelmesin diye 150 ile 350 arasında rastgele bir Y koordinatı seçtik.
+                pipes.emplace_back(800.f, randomY);
+                // Yeni boruyu hafızada kopyalama hatası olmasın diye emplace_back ile doğrudan listede yarattık.
+                pipeClock.restart();
             }
        
         // Kuşun koordinatına göre ekran dışında olup olmadığını kontrol ediyoruz.

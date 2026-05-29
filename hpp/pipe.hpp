@@ -4,6 +4,7 @@
 
 class Pipe{
 public:
+
     Pipe(float xPos,float gapY); // Borunun çıkış yeri ve aradaki boşluğun nerede olduğu.
     void update(float deltatime); // Borunun sola doğru akışı için.
     void draw(sf::RenderWindow& window); // Boruları ekranda gösterir.
@@ -16,6 +17,7 @@ public:
     }
 
 private:
+
     sf::RectangleShape upperShape;
     sf::RectangleShape lowerShape;
     // Alt ve üst boruların şeklini girdik.

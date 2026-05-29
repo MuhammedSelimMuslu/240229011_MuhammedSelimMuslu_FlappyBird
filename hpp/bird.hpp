@@ -6,7 +6,7 @@
 class Bird {
     public:
 
-    Bird(); // Başlangıç değerleri için.
+    explicit Bird(const sf::Texture& texture); // Başlangıç değerleri için.
     void update(); // Hareket ve yer çekimi hesabı için.
     void draw(sf::RenderWindow& window); // Ekrana çizer.
     void jump(); // Zıplaması için.
@@ -15,7 +15,8 @@ class Bird {
 
     private:
 
-    sf::CircleShape bird; // Kuşun boyutunu 20 piksel yarıçapında olarak belirlemiş olduk.
+    sf::Sprite bird;
+
     float birdY = 300.f; // Kuşun başlangıç yüksekliğini ayarlamış olduk.
     float velocity = 0.f; // Kuşun başlangıç hızını ayarlamış olduk.
     const float gravity = 0.5f; // Her karede artacak olan yerçekimi.
