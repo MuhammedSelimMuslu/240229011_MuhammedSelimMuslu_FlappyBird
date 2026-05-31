@@ -8,6 +8,7 @@
 #include "bird.hpp"
 
 int main() {
+    // Rastgele sayı üreticisini şimdiki zamana göre ayarlayacağız ki borular aynı gelmesin.
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     // SFML 3'te VideoMode artık bir vektör boyutu beklediği için değerleri { } içine almamız gerekiyor.
     sf::RenderWindow window(sf::VideoMode({800, 600}), "Flappy Bird - C++ & SFML");
@@ -19,6 +20,24 @@ int main() {
         // Eğer dosyayı bulamazsa terminale hata yazdırsın.
         std::printf("HATA: bird.png dosyasi bulunamadi!\n");
     }
+
+    sf::Texture pipeTexture;
+    if (!pipeTexture.loadFromFile("pipe.png")) {
+        // Eğer dosyayı bulamazsa terminale hata yazdırsın.
+        std::printf("HATA: pipe.png dosyasi bulunamadi!\n");
+    }
+
+    sf::Texture bgTexture;
+    if (!bgTexture.loadFromFile("background.png")) {
+        // Eğer dosyayı bulamazsa terminale hata yazdırsın.
+        std::printf("HATA: background.png dosyasi bulunamadi!\n");
+    }
+
+    // Arka plan ekrana tam sığsın diye yazdığımız özellikler.
+    sf::Sprite bgSprite(bgTexture); 
+    float bgScaleX = 800.f / bgTexture.getSize().x;
+    float bgScaleY = 600.f / bgTexture.getSize().y;
+    bgSprite.setScale({bgScaleX, bgScaleY});
 
     Bird flappy(birdTexture);
 
@@ -59,15 +78,15 @@ int main() {
     // Highscore yazımı.
     sf::Text highScoreText(font);
     highScoreText.setCharacterSize(25);
-    highScoreText.setFillColor(sf::Color::Yellow);
+    highScoreText.setFillColor(sf::Color::Black);
     highScoreText.setPosition({280.0f, 370.0f});
 
     // X = 700 konumunda ve ortadaki boşluğun Y = 200 koordinatında başladığı bir boru oluşturduk.
     std::vector<Pipe> pipes;
-    pipes.emplace_back(700.f, 200.f);
+    pipes.emplace_back(700.f, 200.f, pipeTexture);
     sf::Clock pipeClock;
 
-    // Oyun döngüsü (Game Loop)
+    // Oyun döngüsü (Game Loop).
     while (window.isOpen()) {
 
         // SFML 3'te Event mantığı tamamen değişti ve çok daha güvenli olan std::optional yapısına geçtik.
@@ -79,8 +98,10 @@ int main() {
             
             if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()){
                 if (keyPressed->code == sf::Keyboard::Key::Space){
+                    // Space tuşuna atama yaptık zıplamak için.
                     if (!isGameOver) {
-                        flappy.jump(); // Oyun devam ediyorsa kuş zıplayabilsin.
+                        flappy.jump(); 
+                        // Oyun devam ediyorsa kuş zıplayabilsin.
                     }
                     else{
                         score = 0;
@@ -98,9 +119,10 @@ int main() {
         
         if(!isGameOver){
             if (pipeClock.getElapsedTime().asSeconds() > 2.0f) {
-                float randomY = static_cast<float>(std::rand() % 200 + 150); // 150 ile 350 arasında rastgele yükseklik olacak.
-                // Borular hep aynı hizada gelmesin diye 150 ile 350 arasında rastgele bir Y koordinatı seçtik.
-                pipes.emplace_back(800.f, randomY);
+                float randomY = static_cast<float>(std::rand() % 200 + 150); 
+                // 150 ile 350 arasında rastgele yükseklik olacak (borular hep aynı şekilde gelmesin diye).
+                
+                pipes.emplace_back(800.f, randomY, pipeTexture);
                 // Yeni boruyu hafızada kopyalama hatası olmasın diye emplace_back ile doğrudan listede yarattık.
                 pipeClock.restart();
             }
@@ -150,8 +172,10 @@ int main() {
         }
     }
         
-    // Ekranı temizlemesi için (Açık mavi bir renk ile).
-    window.clear(sf::Color(135, 206, 235));
+    // Ekranı temizlemesi için.
+    window.clear();
+    window.draw(bgSprite);
+
     flappy.draw(window);
 
     // Boruyu ekrana çizelim.
@@ -159,7 +183,7 @@ int main() {
         pipes[i].draw(window);
     }
 
-    // Skoru yazdırıyoruz.
+    
     window.draw(scoreText);
 
     if(isGameOver){
@@ -168,7 +192,6 @@ int main() {
         window.draw(highScoreText);
     }
 
-    // Çizilenleri ekrana yansıtmak için.
     window.display();
     
     }

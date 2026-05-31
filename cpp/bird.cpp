@@ -2,16 +2,16 @@
 
 Bird::Bird(const sf::Texture& texture) : bird(texture) {
     birdY = 300.f;
-    velocity = 0.f;
+    velocity = 0.f; // Başlangıç düşüş hızı.
     
     bird.setScale({2.0f, 2.0f});
-    bird.setOrigin({17.f, 12.f});
+    bird.setOrigin({17.f, 12.f}); // Kuş aşağı yada yukarı gittiğinde merkezden dönmesi için.
     bird.setPosition({100.f, birdY});
 }
 
 void Bird::update(){
-    velocity += gravity; // Yerçekiminin hızı arttırması için.
-    birdY += velocity; // Hızın kuşun konumunu değiştirmesi için.
+    velocity += gravity; 
+    birdY += velocity; 
     bird.setPosition({100.f, birdY}); // Kuşun görüntüsünü yeni koordinata taşıması için.
 
     float angle = velocity * 4.0f;
@@ -22,29 +22,30 @@ void Bird::update(){
 }   
 
 void Bird::draw(sf::RenderWindow& window){
-     window.draw(bird);  // Bu kod kuşumuzu çizdirmek için.
+     window.draw(bird);  
 }
 
 void Bird::jump(){
-    velocity = jumpForce; // Zıplayınca kuş yukarı yöne gitsin.
+    velocity = jumpForce; 
 }
 
 sf::Rect<float> Bird::getBounds() const {
-    // 1. Önce kuşun orijinal ve geniş sınırlarını alıyoruz
+    // Önce kuşun orijinal ve geniş sınırlarını alacağız.
     sf::Rect<float> bounds = bird.getGlobalBounds();
     
-    // 2. Etraftaki şeffaf pikselleri ve kafa eğme payını tıraşlıyoruz (Daha affedici Hitbox)
-    bounds.position.x += 3.f;  // Soldan 3 piksel daralttık.
-    bounds.position.y += 3.f;  // Üstten 3 piksel daralttık
-    bounds.size.x -= 6.f;     // Toplam genişliği 6 piksel küçülttük.
-    bounds.size.y -= 6.f;     // Toplam yüksekliği 6 piksel küçülttük.
+    // Etraftaki şeffaf pikselleri ve kafa eğme payını tıraşlayacağız.
+    bounds.position.x += 3.f;  
+    bounds.position.y += 3.f;  
+    bounds.size.x -= 6.f;     
+    bounds.size.y -= 6.f;     
     
     return bounds;
 }
 
-void Bird::reset() {
+void Bird::reset() { 
+    // Oyun tekrar başladığında ayarlanacak özellikleri için.
     birdY = 300.f;
-    velocity = 0.f; // Kuşun başlangıçta olacak olan aşağı düşüş hızı.
-    bird.setPosition({100.f, 300.f}); // Kuşu ekranın solunda ve dikeyde ortada olacak şekilde başlatıyoruz.
-    bird.setRotation(sf::degrees(0.f));
+    velocity = 0.f; 
+    bird.setPosition({100.f, 300.f}); 
+    bird.setRotation(sf::degrees(0.f)); // Burnunu düz yapması için.
 }
